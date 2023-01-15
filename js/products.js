@@ -32,7 +32,7 @@ createApp({
         checkin(){
             const api = `${this.apiUrl}/api/user/check`;
             axios.post(api).then(()=>{
-                //跨區要加this
+                // 跨區要加this
                 this.showProducts();
 
             }).catch((err)=>{
@@ -101,23 +101,6 @@ createApp({
                 delProductModal.show();
             }
         },
-        // showModal(isNew, item) {
-        //     if (isNew === 'new') {
-        //       this.temproduct = {
-        //         imagesUrl: [],
-        //       };
-        //       this.isNew = true;
-        //       productModal.show();
-        //     } else if (isNew === 'edit') {
-        //       this.temproduct = { ...item };
-        //       this.isNew = false;
-        //       productModal.show();
-        //     } else if (isNew === 'delete') {
-        //       this.temproduct = { ...item };
-        //       delProduct.show()
-        //     }
-        //   },
-
         creatImg(){
             this.temproduct.imagesUrl = [];
             this.temproduct.imagesUrl.push('');

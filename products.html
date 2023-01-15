@@ -90,7 +90,7 @@
                   <!-- 多圖新增 -->
                   <h3 class="mb-3">多圖新增</h3>
 
-                  <div class="mb-2" v-for="(item,key) in temproduct.imagesUrl" :key="key">
+                  <div class="mb-2" v-for="(img,key) in temproduct.imagesUrl" :key="key">
                     <div class="mb-3">
                       <label for="imagesUrl" class="form-label">圖片網址</label>
                       <input v-model="temproduct.imagesUrl[key]" type="text" class="form-control"
