@@ -15,6 +15,7 @@
     <div id="app">
       <div class="container">
         <div class="text-end mt-4">
+          <!-- 新建的商品>呼叫modal>初始化temp>isnew狀態變成true -->
           <button class="btn btn-primary" @click="showModal('new')">
             建立新的產品
           </button>
@@ -40,6 +41,8 @@
               </th>
             </tr>
           </thead>
+
+          <!-- showproduct 全部商品區 -->
           <tbody>
             <tr v-for="(item) in products" :key="item.id">
               <td>{{item.category}}</td>
@@ -52,9 +55,11 @@
               </td>
               <td>
                 <div class="btn-group">
+                 <!-- 編輯舊商品>呼叫modal>將v-for item 回傳function 並且存在temprodut中 >isnew狀態變成false -->
                   <button type="button" class="btn btn-outline-primary btn-sm"  @click="showModal('edit',item)">
                     編輯
                   </button>
+                  <!-- 刪除商品>呼叫modal>將v-for item 回傳function 並且存在temprodut中 > modal中取到的資料就是當前的資料-->
                   <button type="button" class="btn btn-outline-danger btn-sm" @click="showModal('del',item)">
                     刪除
                   </button>
@@ -70,8 +75,11 @@
         <div class="modal-dialog modal-xl">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
-              <h5 id="productModalLabel" class="modal-title">
+              <h5 id="productModalLabel" class="modal-title" v-if="isNew">
                 <span>新增產品</span>
+              </h5>
+              <h5 id="productModalLabel" class="modal-title" v-else>
+                <span>編輯</span><span style="color:rgb(255, 132, 0)">{{temproduct.title}}</span>
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -91,34 +99,44 @@
                   
                   <h3 class="mb-3">多圖新增</h3>
                   
+                  <!-- 需要先判斷imagesUrl是否是陣列 -->
+                  <!-- 如果沒有這句，imagesUrl又沒有圖片的話會出錯 -->
+                  <!-- 因為會沒有imagesUrl這個屬性但是v-for卻會一直往temproduct裡面找imagesurl(不存在) -->
+                  <!-- 解決方法是直接新增插入一比空資料到imagesurl裡(下下方v-else129) -->
                   <div v-if="Array.isArray(temproduct.imagesUrl)">
-
-                  
-                  <div class="mb-2" v-for="(item,key) in temproduct.imagesUrl" :key="key">
-                    <div class="mb-3">
-                      <label for="imagesUrl" class="form-label">圖片網址</label>
-                      <input v-model="temproduct.imagesUrl[key]" type="text" class="form-control"
-                             placeholder="請輸入圖片連結">
+                    <div class="mb-2" v-for="(item,key) in temproduct.imagesUrl" :key="key">
+                      <div class="mb-3">
+                        <label for="imagesUrl" class="form-label">圖片網址</label>
+                        <!-- 這裡不用item是因為 item 是指向不同記憶體，所以想改直時會改不到temproduct上 -->
+                        <input v-model="temproduct.imagesUrl[key]" type="text" class="form-control"
+                              placeholder="請輸入圖片連結">
+                      </div>
+                      <img class="img-fluid" :src="item" alt="">
                     </div>
-                    <img class="img-fluid" :src="item" alt="">
+                    <!-- 看不懂這串?現在懂了 -->
+                  <!-- 如果(!tempProduct.imagesUrl陣列有無東西)||(tempProduct.imagesUrl最後一個有無值)  -->
+                  <!-- 如果(!tempProduct.imagesUrl陣列有東西)false||(tempProduct.imagesUrl最後一個無值)false  叫出delet按鈕-->
+                  <!-- 如果(!tempProduct.imagesUrl陣列無東西)true||(tempProduct.imagesUrl最後一個無值)false  叫出新增按鈕-->
+                    <div v-if="!temproduct.imagesUrl.length || temproduct.imagesUrl[temproduct.imagesUrl.length - 1]">
+                      <!-- 用push放進imagesUrl陣列裡新增一筆空的圖片網址，for就會叫出來此字串，在來編輯 -->
+                      <button class="btn btn-outline-primary btn-sm d-block w-100" @click="temproduct.imagesUrl.push('')">
+                        新增圖片
+                      </button>
+                    </div>
+                    <div v-else>
+                      <!-- 刪除最後一筆-->
+                      <button class="btn btn-outline-danger btn-sm d-block w-100" @click="temproduct.imagesUrl.pop()">
+                        刪除圖片
+                      </button>
+                    </div>
                   </div>
-
-                  <div v-if="!temproduct.imagesUrl.length || temproduct.imagesUrl[temproduct.imagesUrl.length - 1]">
-                    <button class="btn btn-outline-primary btn-sm d-block w-100" @click="temproduct.imagesUrl.push('')">
-                      新增圖片
-                    </button>
-                  </div>
-                  <div v-else>
-                    <button class="btn btn-outline-danger btn-sm d-block w-100" @click="temproduct.imagesUrl.pop()">
-                      刪除圖片
-                    </button>
-                  </div></div>
-
+                  <!-- 為啥不能跟上面一樣用tempProduct.imagesUrl.push('') -->
+                  <!-- 因為tempProduct沒有imagesUrl這個陣列所以要先用createImages將資料放進去才可以讀到-->
+                  <!--imagesurl 裡面沒有圖片時，需要自己先創imagesurl[]，並在裡面新增一筆data-->
                   <div v-else>
                     <button class="btn btn-outline-primary btn-sm d-block w-100" @click="creatImg">
                       新增圖片?
                     </button>
-
                   </div>
 
 
@@ -197,9 +215,9 @@
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" v-for="item in temproduct">
+            <div class="modal-body" >
               是否刪除
-              <strong class="text-danger">{{item.title}}</strong> 商品(刪除後將無法恢復)。
+              <strong class="text-danger">{{temproduct.title}}</strong> 商品(刪除後將無法恢復)。
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">

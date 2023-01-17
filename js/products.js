@@ -111,12 +111,14 @@ createApp({
                 this.isNew = false;
                 productModal.show();
             } else if (isNew==='del'){
-                //important要加這段才可以取得產品的id 才能知道要刪除哪一個
-                // this.temproduct = {...item};
+                //important要加這段才可以取得產品的id 才能知道要刪除哪一個 
+                this.temproduct = {...item};
                 delProductModal.show();
             }
         },
         creatImg(){
+            //當多圖的地方沒有東西
+            //建立一個陣列初始化，並且放入一筆空的資料
             this.temproduct.imagesUrl = [];
             this.temproduct.imagesUrl.push('');
         }
