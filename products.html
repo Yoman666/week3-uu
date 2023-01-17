@@ -55,7 +55,7 @@
                   <button type="button" class="btn btn-outline-primary btn-sm"  @click="showModal('edit',item)">
                     編輯
                   </button>
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="showModal('delete',item)">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="showModal('del',item)">
                     刪除
                   </button>
                 </div>
@@ -88,9 +88,13 @@
                   </div>
 
                   <!-- 多圖新增 -->
+                  
                   <h3 class="mb-3">多圖新增</h3>
+                  
+                  <div v-if="Array.isArray(temproduct.imagesUrl)">
 
-                  <div class="mb-2" v-for="(img,key) in temproduct.imagesUrl" :key="key">
+                  
+                  <div class="mb-2" v-for="(item,key) in temproduct.imagesUrl" :key="key">
                     <div class="mb-3">
                       <label for="imagesUrl" class="form-label">圖片網址</label>
                       <input v-model="temproduct.imagesUrl[key]" type="text" class="form-control"
@@ -108,6 +112,13 @@
                     <button class="btn btn-outline-danger btn-sm d-block w-100" @click="temproduct.imagesUrl.pop()">
                       刪除圖片
                     </button>
+                  </div></div>
+
+                  <div v-else>
+                    <button class="btn btn-outline-primary btn-sm d-block w-100" @click="creatImg">
+                      新增圖片?
+                    </button>
+
                   </div>
 
 
@@ -186,9 +197,9 @@
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" v-for="item in temproduct">
               是否刪除
-              <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
+              <strong class="text-danger">{{item.title}}</strong> 商品(刪除後將無法恢復)。
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
