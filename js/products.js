@@ -1,9 +1,10 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
+import pagination from '../components/pagination.js';  
 // 1初始化modal 
 let productModal = '';
 let delProductModal='';
-createApp({
+const app =createApp({
     data() {
         return {
             apiUrl:"https://vue3-course-api.hexschool.io/v2",
@@ -16,8 +17,10 @@ createApp({
             },
             // 判斷是新建的產品或是已有的產品，用來判斷要乎要哪種api
             isNew: false,
+            pagination:{},
         }
     },
+    components:{pagination},
     mounted() {
         // 2modal init 綁定(固定格式)
         productModal = new bootstrap.Modal(document.getElementById('productModal'), {
@@ -48,12 +51,21 @@ createApp({
         //取出商品資料放置在自訂的陣列中
         //要怎麼知道取出的位置?console.log(response);
         // console.log(this.products); > 裡面看
-        showProducts(){
-            const api = `${this.apiUrl}/api/${this.path}/admin/products/all`
+
+        // 若要使用分頁功能，則api不可以使用all要
+        showProducts(page=1){
+            const api = `${this.apiUrl}/api/${this.path}/admin/products?page=${page}`
             axios.get(api).then((response)=>{
-                this.products = response.data.products;
+                const{products,pagination} = response.data;
+                this.products=products;
+                // this.products = response.data.products;
+                // 取得getdataapi中的pagenation 資訊包含數量及下頁下頁
+                this.pagination = pagination;
+                // this.pagination = response.data.pagination;
+                // 檢視用
+                // console.log(response.data);
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
         
@@ -78,7 +90,7 @@ createApp({
                 // 更新完後需要再渲染一次showproducts
                 this.showProducts();
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
         
@@ -91,7 +103,7 @@ createApp({
                 // 需要再渲染一次反正每次增刪改後都要再次渲染一次資料
                 this.showProducts();
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
 
@@ -123,4 +135,39 @@ createApp({
             this.temproduct.imagesUrl.push('');
         }
     },
-}).mount("#app");
+});
+
+// 全域註冊
+// 分頁元件
+// template用法
+// app.component('pagination',{
+//      props: ['pages','get_product'],
+//     template: `<nav aria-label="Page navigation example">
+//     <!-- 直接檢視外層是否有傳送資料到內層{{pages}}-->
+//                     <ul class="pagination">
+//                     <li class="page-item" :class="{disabled: !pages.has_pre}">
+//                         <a class="page-link" href="#" aria-label="Previous" @click="get_product(pages.current_page-1)">
+//                         <span aria-hidden="true">&laquo;</span>
+//                         </a>
+//                     </li>
+
+//                     <li class="page-item" :class="{active: item === pages.current_page}"
+//                         v-for="(item) in pages.total_pages" :key="item+'item'">
+//                     <a class="page-link" href="#" @click="get_product(item)">{{item}}</a>
+//                     </li>
+
+//                     <li class="page-item" :class="{disabled: !pages.has_next}">
+//                         <a class="page-link" href="#" aria-label="Next"  @click="get_product(pages.current_page+1)">
+//                         <span aria-hidden="true">&raquo;</span>
+//                         </a>
+//                     </li>
+//                     </ul>
+//                 </nav>`,
+// })
+
+app.component('product_moda',{
+    props:['temproduct','isNew','updateProduct'],
+    template: "#product_modal_template",
+});
+
+app.mount("#app");
