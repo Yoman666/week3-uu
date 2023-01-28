@@ -53,7 +53,7 @@ createApp({
             axios.get(api).then((response)=>{
                 this.products = response.data.products;
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
         
@@ -78,7 +78,7 @@ createApp({
                 // 更新完後需要再渲染一次showproducts
                 this.showProducts();
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
         
@@ -91,7 +91,7 @@ createApp({
                 // 需要再渲染一次反正每次增刪改後都要再次渲染一次資料
                 this.showProducts();
             }).catch((err)=>{
-                alert(err.response.data.message);
+                alert(err.data.message);
             })
         },
 

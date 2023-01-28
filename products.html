@@ -103,7 +103,7 @@
                   <!-- 如果沒有這句，imagesUrl又沒有圖片的話會出錯 -->
                   <!-- 因為會沒有imagesUrl這個屬性但是v-for卻會一直往temproduct裡面找imagesurl(不存在) -->
                   <!-- 解決方法是直接新增插入一比空資料到imagesurl裡(下下方v-else129) -->
-                  <div v-if="Array.isArray(temproduct.imagesUrl)">
+                  <template v-if="Array.isArray(temproduct.imagesUrl)">
                     <div class="mb-2" v-for="(item,key) in temproduct.imagesUrl" :key="key">
                       <div class="mb-3">
                         <label for="imagesUrl" class="form-label">圖片網址</label>
@@ -129,7 +129,7 @@
                         刪除圖片
                       </button>
                     </div>
-                  </div>
+                  </template>
                   <!-- 為啥不能跟上面一樣用tempProduct.imagesUrl.push('') -->
                   <!-- 因為tempProduct沒有imagesUrl這個陣列所以要先用createImages將資料放進去才可以讀到-->
                   <!--imagesurl 裡面沒有圖片時，需要自己先創imagesurl[]，並在裡面新增一筆data-->
